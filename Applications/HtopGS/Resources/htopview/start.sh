@@ -6,7 +6,7 @@ DIR="${0%/*}"
 PREFDIR="$HOME/Library/Preferences"
 PREFFILE="$PREFDIR/htoprc2"
 
-export TERM=gsterm-1000
+export TERM=xterm-256color
 export LANG=en_US.UTF-8
 export LC_CTYPE="en_US.UTF-8"
 
