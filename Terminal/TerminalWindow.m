@@ -96,38 +96,43 @@ NSString* const TerminalWindowSizeDidChangeNotification =
   [win setResizeIncrements:NSMakeSize(charCellSize.width, charCellSize.height)];
   [win setMinSize:winMinimumSize];
 
-  hBox = [[GSHbox alloc] init];
+hBox = [[GSHbox alloc] init];
 
-  // Scroller
-  scroller = [[NSScroller alloc] initWithFrame:NSMakeRect(0,0,scrollerWidth,
-                                                          charCellSize.height)];
-  [scroller setArrowsPosition:NSScrollerArrowsMaxEnd];
-  [scroller setEnabled:YES];
-  [scroller setAutoresizingMask:NSViewHeightSizable];
-  if (scrollBackEnabled)
-    {
-      [hBox addView:scroller enablingXResizing:NO];
-      [scroller release];
-    }
+// Scroller (Create First but Do NOT Add to hBox Yet)
+scroller = [[NSScroller alloc] initWithFrame:NSMakeRect(0, 0, scrollerWidth, charCellSize.height)];
+[scroller setArrowsPosition:NSScrollerArrowsMaxEnd];
+[scroller setEnabled:YES];
+[scroller setAutoresizingMask:NSViewHeightSizable];
 
-  // View
-  tView = [[TerminalViewX alloc] initWithPreferences:preferences];
-  [tView setIgnoreResize:YES];
-  [tView setAutoresizingMask:NSViewHeightSizable|NSViewWidthSizable];
-  [tView setScroller:scroller];
-  [hBox addView:tView];
-  [tView release];
-  [tView setIgnoreResize:NO];
-  [win makeFirstResponder:tView];
+// View (Initialize After Scroller is Created)
+tView = [[TerminalViewX alloc] initWithPreferences:preferences];
+[tView setIgnoreResize:YES];
+[tView setAutoresizingMask:NSViewHeightSizable|NSViewWidthSizable];
 
-  [tView setBorder:4 :2];
+// Link Scroller to tView BEFORE Adding tView to hBox
+[tView setScroller:scroller];
 
-  [win setContentView:hBox];
-  DESTROY(hBox);
-  
-  [win release];
+// Add tView FIRST to Ensure Proper Layout
+[hBox addView:tView];
+[tView release];
+[tView setIgnoreResize:NO];
+[win makeFirstResponder:tView];
 
-  return self;
+[tView setBorder:4 :2];
+
+// Now Add Scroller to hBox AFTER tView (Places it on the Right)
+if (scrollBackEnabled)
+{
+  [hBox addView:scroller enablingXResizing:NO];
+  [scroller release];
+}
+
+[win setContentView:hBox];
+DESTROY(hBox);
+
+[win release];
+
+return self;
 }
 
 - init
