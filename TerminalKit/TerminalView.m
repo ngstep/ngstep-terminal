@@ -2563,7 +2563,7 @@ void __encodechar(int encoding, screen_char_t *ch, char *buf)
         if (chdir(cdirectory) < 0)
           fprintf(stderr, "Unable do set directory: %s\n", cdirectory);
 
-      putenv("TERM=xterm-256color");
+      putenv("TERM=gsterm");
       putenv(termenv);
 
       // fprintf(stderr, "Child process terminal: %s\n", ttyname(0));
